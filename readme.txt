@@ -19,6 +19,10 @@ Find the new widget in your Widgets page.
 
 Options include: Title, Total # of comments to show, # of comments to show per post, and whether or not to display the # of comments on each post.
 
+== Screenshots ==
+
+1. An example of grouped screenshots. Comments for a post are listed underneat the post link and next to the name of the comment author.
+
 == Changelog ==
 
 = 1.0 =
