@@ -3,7 +3,7 @@
 Plugin Name: Grouped Comments Widget
 Plugin URI: http://croberts.me/grouped-comments-widget/
 Description: This plugin adds a widget which displays your recent comments, grouped by post.
-Version: 1.0
+Version: 1.2
 Author: Chris Roberts
 Author URI: http://croberts.me/
 */
@@ -53,9 +53,7 @@ class grouped_comments_widget extends WP_Widget
 		$recent_counter = 0;
 		
 		foreach ($recent_comments as $this_comment) {
-			//if ($this_comment->comment_type == '') {
-			if (1==1) {
-				
+			if ($this_comment->comment_type == '') {
 				if (!isset($comment_posts[$this_comment->comment_post_ID])) {
 					$comment_posts[$this_comment->comment_post_ID] = array();
 				}
@@ -70,29 +68,32 @@ class grouped_comments_widget extends WP_Widget
 			echo '<ul class="grouped_recent_comments">';
 			
 			// Don't show more than $comments_total total comments.
-			$comments_shown = 1;
+			$comments_shown = 0;
 			
 			foreach ($comment_posts as $comment_post_ID => $post_comments) {
 				// Get post comment count.
 				$post_comment_count = get_comments(array('status' => 'approve', 'post_id' => $comment_post_ID, 'count' => true, 'type' => 'comment'));
 				
-				echo '<li class="grouped_recent_comments_post_name"><a href="'. get_permalink($comment_post_ID) .'#comments">'. get_the_title($comment_post_ID) .'</a>';
+				echo '<li class="grouped_recent_comments_post"><div class="grouped_recent_comments_post_name"><a href="'. get_permalink($comment_post_ID) .'#comments">'. get_the_title($comment_post_ID) .'</a>';
 				
 				if ($instance['show_post_count']) {
 					echo ' <strong>('. $post_comment_count .')</strong>';
 				}
 				
+				echo '</div>';
+				
 				echo '<ul class="grouped_recent_comments_post">';
 				
 				// Don't show more than $comments_per_post recent comments per post.
-				$post_comments_shown = 1;
+				$post_comments_shown = 0;
 				foreach ($post_comments as $post_comment) {
 					echo '<li class="grouped_recent_comment"><a href="'. get_permalink($post_comment->comment_post_ID) .'#comment-'. $post_comment->comment_ID .'">'. $post_comment->comment_author .'</a>: '. get_comment_excerpt($post_comment->comment_ID) .'</li>';
 					
-					if ($post_comments_shown == $instance['comments_per_post']) {
+					$post_comments_shown++;
+					$comments_shown++;
+					
+					if ($post_comments_shown == $instance['comments_per_post'] || $comments_shown == $instance['comments_total']) {
 						break;
-					} else {
-						$post_comments_shown++;
 					}
 				}
 				
@@ -100,8 +101,6 @@ class grouped_comments_widget extends WP_Widget
 				
 				if ($comments_shown == $instance['comments_total']) {
 					break;
-				} else {
-					$comments_shown++;
 				}
 			}
 			
