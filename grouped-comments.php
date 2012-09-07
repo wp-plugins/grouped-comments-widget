@@ -3,7 +3,7 @@
 Plugin Name: Grouped Comments Widget
 Plugin URI: http://croberts.me/grouped-comments-widget/
 Description: This plugin adds a widget which displays your recent comments, grouped by post.
-Version: 1.0
+Version: 1.2
 Author: Chris Roberts
 Author URI: http://croberts.me/
 */

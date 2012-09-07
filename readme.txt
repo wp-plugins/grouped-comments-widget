@@ -3,7 +3,7 @@ Contributors: Columcille
 Tags: recent, comments, grouped, recent comments, grouped comments
 Requires at least: 2.7
 Tested up to: 3.4.1
-Stable tag: 1.1
+Stable tag: 1.2
 
 Adds a widget which displays recent comments, grouped by post.
 
