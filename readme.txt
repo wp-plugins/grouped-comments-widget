@@ -2,8 +2,8 @@
 Contributors: Columcille
 Tags: recent, comments, grouped, recent comments, grouped comments
 Requires at least: 2.7
-Tested up to: 3.4.1
-Stable tag: 1.2
+Tested up to: 3.4.2
+Stable tag: 1.3
 
 Adds a widget which displays recent comments, grouped by post.
 
@@ -24,6 +24,9 @@ Options include: Title, Total # of comments to show, # of comments to show per p
 1. An example of grouped screenshots. Comments for a post are listed underneat the post link and next to the name of the comment author.
 
 == Changelog ==
+
+= 1.3 =
+* Trim down long urls in comments so they don't overflow the widget area
 
 = 1.1 =
 * Added div wrapper around post titles

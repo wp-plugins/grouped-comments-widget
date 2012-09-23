@@ -3,7 +3,7 @@
 Plugin Name: Grouped Comments Widget
 Plugin URI: http://croberts.me/grouped-comments-widget/
 Description: This plugin adds a widget which displays your recent comments, grouped by post.
-Version: 1.2
+Version: 1.3
 Author: Chris Roberts
 Author URI: http://croberts.me/
 */
@@ -87,7 +87,24 @@ class grouped_comments_widget extends WP_Widget
 				// Don't show more than $comments_per_post recent comments per post.
 				$post_comments_shown = 0;
 				foreach ($post_comments as $post_comment) {
-					echo '<li class="grouped_recent_comment"><a href="'. get_permalink($post_comment->comment_post_ID) .'#comment-'. $post_comment->comment_ID .'">'. $post_comment->comment_author .'</a>: '. get_comment_excerpt($post_comment->comment_ID) .'</li>';
+					$comment_text = get_comment_excerpt($post_comment->comment_ID);
+					
+					// Search the excerpt for links and trim them down
+					// $url_match = '\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))';
+					$url_match = '@\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))@';
+					if (preg_match($url_match, $comment_text, $matches)) {
+						$found_url = $matches[0];
+						$replace_url = $found_url;
+						
+						if (strlen($found_url) >= 20) {
+							$replace_url = substr($found_url, 0, 17) ."...";
+						}
+						
+						$comment_text = str_replace($found_url, $replace_url, $comment_text);
+					}
+					
+					$comment_display = '<li class="grouped_recent_comment"><a href="'. get_permalink($post_comment->comment_post_ID) .'#comment-'. $post_comment->comment_ID .'">'. $post_comment->comment_author .'</a>: '. $comment_text .'</li>';
+					echo $comment_display;
 					
 					$post_comments_shown++;
 					$comments_shown++;
