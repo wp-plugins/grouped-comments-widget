@@ -3,7 +3,7 @@
 Plugin Name: Grouped Comments Widget
 Plugin URI: http://croberts.me/grouped-comments-widget/
 Description: This plugin adds a widget which displays your recent comments, grouped by post.
-Version: 1.3
+Version: 1.4
 Author: Chris Roberts
 Author URI: http://croberts.me/
 */
@@ -44,10 +44,17 @@ class grouped_comments_widget extends WP_Widget
 		}
 
 		$comment_posts = array();
+		
+		if ($instance['show_only_posts']) {
+			$show_type = 'post';
+		} else {
+			$show_type = '';
+		}
+		
 		$recent_comments = get_comments(array(
 											  'status' => 'approve',
 											  'number' => 35,
-											  'post_type' => 'post',
+											  'post_type' => $show_type,
 											  'type' => 'comment'
 											  ));
 		$recent_counter = 0;
@@ -144,6 +151,12 @@ class grouped_comments_widget extends WP_Widget
 		} else {
 			$instance['show_post_count'] = false;
 		}
+		
+		if ($new_instance['show_only_posts'] == 'showPosts') {
+			$instance['show_only_posts'] = true;
+		} else {
+			$instance['show_only_posts'] = false;
+		}
 
 		return $instance;
 	}
@@ -178,6 +191,16 @@ class grouped_comments_widget extends WP_Widget
 			$show_post_count = 'checked="checked"';
 		}
 		
+		if (isset($instance['show_only_posts'])) {
+			if ($instance['show_only_posts']) {
+				$show_only_posts = 'checked="checked"';
+			} else {
+				$show_only_posts = '';
+			}
+		} else {
+			$show_only_posts = '';
+		}
+		
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_id('title'); ?>">Title:</label> 
@@ -190,6 +213,8 @@ class grouped_comments_widget extends WP_Widget
 			<input class="widefat" id="<?php echo $this->get_field_id('comments_per_post'); ?>" name="<?php echo $this->get_field_name('comments_per_post'); ?>" type="text" value="<?php echo esc_attr($comments_per_post); ?>" /><br />
 			
 			<input id="<?php echo $this->get_field_id('show_post_count'); ?>" name="<?php echo $this->get_field_name('show_post_count'); ?>" type="checkbox" value="showComments" <?php echo esc_attr($show_post_count); ?> /> <label for="<?php echo $this->get_field_id('show_post_count'); ?>">Show # of comments per post</label><br />
+			
+			<input id="<?php echo $this->get_field_id('show_only_posts'); ?>" name="<?php echo $this->get_field_name('show_only_posts'); ?>" type="checkbox" value="showPosts" <?php echo esc_attr($show_only_posts); ?> /> <label for="<?php echo $this->get_field_id('show_only_posts'); ?>">Show only comments on posts</label><br />
 		</p>
 		<?php 
 	}
