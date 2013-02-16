@@ -3,12 +3,12 @@
 Plugin Name: Grouped Comments Widget
 Plugin URI: http://croberts.me/grouped-comments-widget/
 Description: This plugin adds a widget which displays your recent comments, grouped by post.
-Version: 1.4
+Version: 1.5
 Author: Chris Roberts
 Author URI: http://croberts.me/
 */
 
-/*  Copyright 2012 Chris Roberts (email : columcille@gmail.com)
+/*  Copyright 2013 Chris Roberts (email : chris@dailycross.net)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -81,7 +81,13 @@ class grouped_comments_widget extends WP_Widget
 				// Get post comment count.
 				$post_comment_count = get_comments(array('status' => 'approve', 'post_id' => $comment_post_ID, 'count' => true, 'type' => 'comment'));
 				
-				echo '<li class="grouped_recent_comments_post"><div class="grouped_recent_comments_post_name"><a href="'. get_permalink($comment_post_ID) .'#comments">'. get_the_title($comment_post_ID) .'</a>';
+				if ($instance['post_link_to'] == "post") {
+					$post_link = get_permalink($comment_post_ID);
+				} else {
+					$post_link = get_permalink($comment_post_ID) .'#comments';
+				}
+				
+				echo '<li class="grouped_recent_comments_post"><div class="grouped_recent_comments_post_name"><a href="'. $post_link .'">'. get_the_title($comment_post_ID) .'</a>';
 				
 				if ($instance['show_post_count']) {
 					echo ' <strong>('. $post_comment_count .')</strong>';
@@ -145,6 +151,7 @@ class grouped_comments_widget extends WP_Widget
 		$instance['title'] = strip_tags($new_instance['title']);
 		$instance['comments_total'] = intval($new_instance['comments_total']);
 		$instance['comments_per_post'] = intval($new_instance['comments_per_post']);
+		$instance['post_link_to'] = strip_tags($new_instance['post_link_to']);
 		
 		if ($new_instance['show_post_count'] == 'showComments') {
 			$instance['show_post_count'] = true;
@@ -157,7 +164,7 @@ class grouped_comments_widget extends WP_Widget
 		} else {
 			$instance['show_only_posts'] = false;
 		}
-
+		
 		return $instance;
 	}
 
@@ -201,20 +208,40 @@ class grouped_comments_widget extends WP_Widget
 			$show_only_posts = '';
 		}
 		
+		if (isset($instance['post_link_to'])) {
+			if ($instance['post_link_to'] == "post") {
+				$post_link_to_post = 'checked="checked"';
+				$post_link_to_comments = '';
+			} else {
+				$post_link_to_comments = 'checked="checked"';
+				$post_link_to_post = '';
+			}
+		} else {
+			$post_link_to_comments = 'checked="checked"';
+			$post_link_to_post = '';
+		}
+		
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_id('title'); ?>">Title:</label> 
-			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /><br />
+			<input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr($title); ?>" /><br /><br />
 			
 			<label for="<?php echo $this->get_field_id('comments_total'); ?>">Max # of comments to show:</label> 
-			<input class="widefat" id="<?php echo $this->get_field_id('comments_total'); ?>" name="<?php echo $this->get_field_name('comments_total'); ?>" type="text" value="<?php echo esc_attr($comments_total); ?>" /><br />
+			<input class="widefat" id="<?php echo $this->get_field_id('comments_total'); ?>" name="<?php echo $this->get_field_name('comments_total'); ?>" type="text" value="<?php echo esc_attr($comments_total); ?>" /><br /><br />
 			
 			<label for="<?php echo $this->get_field_id('comments_per_post'); ?>">Max # of comments per post:</label> 
-			<input class="widefat" id="<?php echo $this->get_field_id('comments_per_post'); ?>" name="<?php echo $this->get_field_name('comments_per_post'); ?>" type="text" value="<?php echo esc_attr($comments_per_post); ?>" /><br />
+			<input class="widefat" id="<?php echo $this->get_field_id('comments_per_post'); ?>" name="<?php echo $this->get_field_name('comments_per_post'); ?>" type="text" value="<?php echo esc_attr($comments_per_post); ?>" /><br /><br />
 			
 			<input id="<?php echo $this->get_field_id('show_post_count'); ?>" name="<?php echo $this->get_field_name('show_post_count'); ?>" type="checkbox" value="showComments" <?php echo esc_attr($show_post_count); ?> /> <label for="<?php echo $this->get_field_id('show_post_count'); ?>">Show # of comments per post</label><br />
 			
-			<input id="<?php echo $this->get_field_id('show_only_posts'); ?>" name="<?php echo $this->get_field_name('show_only_posts'); ?>" type="checkbox" value="showPosts" <?php echo esc_attr($show_only_posts); ?> /> <label for="<?php echo $this->get_field_id('show_only_posts'); ?>">Show only comments on posts</label><br />
+			<input id="<?php echo $this->get_field_id('show_only_posts'); ?>" name="<?php echo $this->get_field_name('show_only_posts'); ?>" type="checkbox" value="showPosts" <?php echo esc_attr($show_only_posts); ?> /> <label for="<?php echo $this->get_field_id('show_only_posts'); ?>">Show only comments on posts</label><br /><br />
+			
+			Where should the post link go?<br />
+			<input id="<?php echo $this->get_field_id('post_link_to_comments'); ?>" name="<?php echo $this->get_field_name('post_link_to'); ?>" type="radio" value="comments" <?php echo esc_attr($post_link_to_comments); ?> />
+				<label for="<?php echo $this->get_field_id('post_link_to_comments'); ?>">Post link goes to top of comments</label><br />
+			
+			<input id="<?php echo $this->get_field_id('post_link_to_post'); ?>" name="<?php echo $this->get_field_name('post_link_to'); ?>" type="radio" value="post" <?php echo esc_attr($post_link_to_post); ?> />
+				<label for="<?php echo $this->get_field_id('post_link_to_post'); ?>">Post link goes to top of post</label><br />
 		</p>
 		<?php 
 	}
