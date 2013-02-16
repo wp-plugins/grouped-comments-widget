@@ -217,8 +217,8 @@ class grouped_comments_widget extends WP_Widget
 				$post_link_to_post = '';
 			}
 		} else {
-			$post_link_to_comments = 'checked="checked"';
-			$post_link_to_post = '';
+			$post_link_to_post = 'checked="checked"';
+			$post_link_to_comments = '';
 		}
 		
 		?>
