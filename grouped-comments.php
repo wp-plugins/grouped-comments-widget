@@ -3,7 +3,7 @@
 Plugin Name: Grouped Comments Widget
 Plugin URI: http://croberts.me/grouped-comments-widget/
 Description: This plugin adds a widget which displays your recent comments, grouped by post.
-Version: 1.5.1
+Version: 1.5.2
 Author: Chris Roberts
 Author URI: http://croberts.me/
 */
@@ -127,7 +127,7 @@ class grouped_comments_widget extends WP_Widget
 					}
 				}
 				
-				echo '</li></ul>';
+				echo '</ul>';
 				
 				if ($comments_shown == $instance['comments_total']) {
 					break;
